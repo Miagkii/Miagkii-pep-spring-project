@@ -1,7 +1,11 @@
 package com.example.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import com.example.entity.*;
 import com.example.service.*;
 
@@ -12,7 +16,7 @@ import com.example.service.*;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 
- @RestController
+@RestController
 public class SocialMediaController {
 
     private AccountService accountService;
@@ -22,5 +26,21 @@ public class SocialMediaController {
         this.accountService = accountService;
         this.messageService = messageService;
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+        Account createdAccount = accountService.createAccount(account);
+        if (createdAccount == null) {
+            if (accountService.isDuplicateAccount(account)) {
+                return ResponseEntity.status(409).body(null);
+            }
+            return ResponseEntity.status(400).body(null);
+        }
+        return ResponseEntity.status(200).body(createdAccount);
+
+    }
+
+
+
 
 }

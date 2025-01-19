@@ -17,14 +17,21 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Account create(Account account) {
+    public Account createAccount(Account account) {
+        
+        if(accountRepository.findByUsername(account.getUsername()).isPresent()) {    // Check duplicate account
+            return null;
+        }
 
-        if(!accountRepository.findByUserName(account.getUsername()).isEmpty()) {    // Check duplicate account
-            return new Account("","");
-        } else if(!account.getUsername().isBlank() && account.getPassword().length() > 3) {     // Check account creating rules
+        if(!account.getUsername().isBlank() && account.getPassword().length() > 3) {     // Check account creating rules
             Account createdAccount = new Account(account.getUsername(), account.getPassword());
-            return createdAccount;
-        } else return null;
+            return accountRepository.save(createdAccount);
+        } 
+        return null;
+    }
+
+    public boolean isDuplicateAccount(Account account) {
+        return accountRepository.findByUsername(account.getUsername()).isPresent();
     }
 
     public Optional<Account> login(Account account) {
