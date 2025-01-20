@@ -19,23 +19,27 @@ public class AccountService {
 
     public Account createAccount(Account account) {
         
-        if(accountRepository.findByUsername(account.getUsername()).isPresent()) {    // Check duplicate account
+        if (accountRepository.findByUsername(account.getUsername()).isPresent()) {    // Check duplicate account
             return null;
         }
 
-        if(!account.getUsername().isBlank() && account.getPassword().length() > 3) {     // Check account creating rules
+        if (!account.getUsername().isBlank() && account.getPassword().length() > 3) {     // Check account creating rules
             Account createdAccount = new Account(account.getUsername(), account.getPassword());
             return accountRepository.save(createdAccount);
         } 
         return null;
     }
 
-    public boolean isDuplicateAccount(Account account) {
-        return accountRepository.findByUsername(account.getUsername()).isPresent();
+    public Account login(Account account) {
+        if(accountRepository.findByUsernameAndPassword(account.getUsername(), account.getPassword()).isPresent()) {
+           Account presentAccount = accountRepository.findByUsernameAndPassword(account.getUsername(), account.getPassword()).get();
+           return presentAccount;
+        }
+        return null;
     }
 
-    public Optional<Account> login(Account account) {
-        return accountRepository.findByUsernameAndPassword(account.getUsername(), account.getPassword());
+    public boolean isDuplicateAccount(Account account) {
+        return accountRepository.findByUsername(account.getUsername()).isPresent();
     }
 
 }
