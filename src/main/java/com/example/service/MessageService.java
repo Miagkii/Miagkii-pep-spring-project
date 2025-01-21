@@ -20,11 +20,15 @@ public class MessageService {
         this.accountRepository = accountRepository;
     }
 
+    private boolean messageValidation(String messageText){
+        if (messageText.length() > 255 || messageText.isBlank() || messageText == null) {
+            return false;
+        } else return true;
+    }
+
     public Message createMessage(Message message) {
-        if (message.getMessageText().length() > 255 || message.getMessageText().isBlank()) {
-            return null;
-        }
-        if (messageRepository.findByPostedBy(message.getPostedBy()).isPresent()) {
+
+        if (accountRepository.findByAccountId(message.getPostedBy()).isPresent() && messageValidation(message.getMessageText())) {
             Message createdMessage = new Message(message.getPostedBy(), message.getMessageText(), message.getTimePostedEpoch());
             return messageRepository.save(createdMessage);
         }
@@ -36,6 +40,28 @@ public class MessageService {
         return messageRepository.findAll();
     }
 
+    public Message getByMessageId(Integer id) {
+        return messageRepository.findByMessageId(id).orElse(null);
+    }
 
+    public Integer deleteMessegeById(Integer id) {
+        if (messageRepository.findByMessageId(id).isPresent()) {
+            messageRepository.deleteById(id);
+            return 1;
+        }
+        return null;
+    }
+
+    public Integer updateMessage(Integer id, String messageText) {
+
+        if (messageRepository.findByMessageId(id).isPresent() && messageValidation(messageText)) {
+            Message message = messageRepository.findByMessageId(id).get();
+            message.setMessageText(messageText);
+            messageRepository.save(message);
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
 }

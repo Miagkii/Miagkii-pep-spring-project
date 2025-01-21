@@ -13,4 +13,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 
     Optional<Message> findByPostedBy(Integer username);
     List<Message> findAll();
+    Optional<Message> findByMessageId(Integer messageId);
+    
+
 }
