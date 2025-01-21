@@ -1,8 +1,6 @@
 package com.example.controller;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.entity.*;
 import com.example.service.*;
@@ -81,7 +78,7 @@ public class SocialMediaController {
 
     @DeleteMapping("/messages/{messageId}")
     public ResponseEntity<Integer> deleteMessageById(@PathVariable Integer messageId) {
-        return ResponseEntity.status(200).body(messageService.deleteMessegeById(messageId));
+        return ResponseEntity.status(200).body(messageService.deleteMessageById(messageId));
     }
 
     @PatchMapping("/messages/{messageId}")
@@ -98,5 +95,12 @@ public class SocialMediaController {
         }
         
     }
+
+    @GetMapping("accounts/{accountId}/messages")
+    public ResponseEntity<List<Message>> getMessagesByUser(@PathVariable Integer accountId) {
+        List<Message> messages = messageService.getMessagesByUser(accountId);
+        return ResponseEntity.status(200).body(messages);
+    }
+
 
 }

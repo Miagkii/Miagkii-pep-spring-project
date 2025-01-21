@@ -44,7 +44,7 @@ public class MessageService {
         return messageRepository.findByMessageId(id).orElse(null);
     }
 
-    public Integer deleteMessegeById(Integer id) {
+    public Integer deleteMessageById(Integer id) {
         if (messageRepository.findByMessageId(id).isPresent()) {
             messageRepository.deleteById(id);
             return 1;
@@ -53,15 +53,22 @@ public class MessageService {
     }
 
     public Integer updateMessage(Integer id, String messageText) {
-
-        if (messageRepository.findByMessageId(id).isPresent() && messageValidation(messageText)) {
-            Message message = messageRepository.findByMessageId(id).get();
-            message.setMessageText(messageText);
-            messageRepository.save(message);
-            return 1;
-        } else {
+        if(!messageValidation(messageText)) {
             return 0;
         }
+        return messageRepository.findByMessageId(id)
+                .map(message -> {
+                    message.setMessageText(messageText);
+                    messageRepository.save(message);
+                    return 1;
+                })
+                .orElse(0);
     }
+
+    public List<Message> getMessagesByUser(Integer id) {
+        return messageRepository.findByPostedBy(id);
+    }
+
+
 
 }

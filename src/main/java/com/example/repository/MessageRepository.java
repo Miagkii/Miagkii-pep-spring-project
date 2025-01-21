@@ -11,8 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Integer> {
 
-    Optional<Message> findByPostedBy(Integer username);
-    List<Message> findAll();
+    List<Message> findByPostedBy(Integer username);
     Optional<Message> findByMessageId(Integer messageId);
     
 
